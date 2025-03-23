@@ -9,6 +9,8 @@
     foreman_fqdn: "foreman.my.local"
     foreman_hostname: "foreman"
     foreman_ip: "192.168.56.200"
+    foreman_admin_user: "admin"
+    foreman_admin_passwd: "changeme"
 
   tasks:
   - name: Update /etc/hosts
@@ -33,6 +35,13 @@
       disable_gpg_check: true
 
   - name: Run foreman-install katello scenario
-    shell: foreman-installer --scenario katello
+    shell: foreman-installer --scenario katello --foreman-initial-admin-email nhadie.ramos@gmail.com \
+      --foreman-initial-admin-first-name nhadie \
+      --foreman-initial-admin-last-name ramos \
+      --foreman-initial-admin-username "{{ foreman_admin_user }}" \
+      --foreman-initial-admin-password "{{ foreman_admin_passwd }}" \
+      --foreman-initial-organization MY-LOCAL \
+      --foreman-initial-location LOCAL
     async: 3600
     poll: 60
+
