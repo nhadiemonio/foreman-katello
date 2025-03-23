@@ -1,0 +1,38 @@
+---
+- hosts: all
+  become: true
+  become_user: root
+  gather_facts: false
+
+  vars:
+    ansible_python_interpreter: "/usr/bin/python3.12"
+    foreman_fqdn: "foreman.my.local"
+    foreman_hostname: "foreman"
+    foreman_ip: "192.168.56.200"
+
+  tasks:
+  - name: Update /etc/hosts
+    ansible.builtin.lineinfile:
+      path: /etc/hosts
+      regexp: '^127.*{{ foreman_fqdn }}'
+      line: "{{ foreman_ip }} {{ foreman_fqdn }} {{ foreman_hostname }}"
+      backup: true
+
+  - name: Configure Foreman / Katello dnf repository
+    ansible.builtin.dnf:
+      name: "{{ item }}"
+      disable_gpg_check: true
+    loop:
+      - https://yum.theforeman.org/releases/nightly/el9/x86_64/foreman-release.rpm
+      - https://yum.theforeman.org/katello/nightly/katello/el9/x86_64/katello-repos-latest.rpm
+      - https://yum.puppet.com/puppet8-release-el-9.noarch.rpm
+
+  - name: install foreman-installer-katello package
+    ansible.builtin.dnf:
+      name: "foreman-installer-katello"
+      disable_gpg_check: true
+
+  - name: Run foreman-install katello scenario
+    shell: foreman-installer --scenario katello
+    async: 3600
+    poll: 60
