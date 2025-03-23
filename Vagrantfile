@@ -12,6 +12,9 @@ Vagrant.configure("2") do |config|
     foreman.vm.provision "file", source: "~/.ssh/id_ed25519.pub", destination: "/tmp/id_ed25519.pub"
     foreman.vm.provision "shell", inline: <<-SHELL
       cat /tmp/id_ed25519.pub >> /home/vagrant/.ssh/authorized_keys
+      sudo dnf update -y
+      sudo dnf install python3.12 python3.12-pip -y
+      sudo python3.12 -m pip install ansible ansible-core --upgrade
     SHELL
   end
   config.vm.define :centos do |centos|
@@ -27,6 +30,9 @@ Vagrant.configure("2") do |config|
     centos.vm.provision "file", source: "~/.ssh/id_ed25519.pub", destination: "/tmp/id_ed25519.pub"
     centos.vm.provision "shell", inline: <<-SHELL
       cat /tmp/id_ed25519.pub >> /home/vagrant/.ssh/authorized_keys
+      sudo dnf update -y
+      sudo dnf install python3.12 python3.12-pip -y
+      sudo python3.12 -m pip install ansible ansible-core --upgrade
     SHELL
   end
 end
