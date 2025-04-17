@@ -9,7 +9,7 @@ Vagrant.configure("2") do |config|
       vbox.memory = 32768
       vbox.cpus = 8
     end
-    foreman.vm.network "private_network", :ip => "192.168.56.200", :name => "VirtualBox Host-Only Ethernet Adapter", :adapter => 2
+    foreman.vm.network "private_network", :ip => "192.168.56.200", :name => "vboxnet0", :adapter => 2
     foreman.vm.provision "file", source: "~/.ssh/id_ed25519.pub", destination: "/tmp/id_ed25519.pub"
     foreman.vm.provision "file", source: "foreman-install", destination: "/tmp/foreman-install"
     foreman.vm.provision "shell", inline: <<-SHELL
